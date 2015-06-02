@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalLayout>
+	<spring:TestComponent id="testComponent" xmlns:spring="urn:autowired:byId:specificTestComponent" ></spring:TestComponent>
+</HorizontalLayout>

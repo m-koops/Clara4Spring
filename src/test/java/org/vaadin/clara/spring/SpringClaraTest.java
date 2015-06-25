@@ -26,24 +26,22 @@ public class SpringClaraTest {
 	public ExpectedException thrown = ExpectedException.none();
 
 	public static class Controller {
+		// empty
 	}
 
 	@Test
 	public void testShouldResolveAndAutowireComponentByType() {
-		Component inflated = springClara.create("autowiredByType.xml",
-				new Controller());
-		TestComponent component = (TestComponent) Clara.findComponentById(
-				inflated, "testComponent");
+		Component inflated = springClara.create("autowiredByType.xml", new Controller());
+		TestComponent component = (TestComponent)Clara.findComponentById(inflated, "testComponent");
 		assertNotNull(component);
 		assertNotNull(component.getSomeBean());
 	}
 
 	@Test
 	public void testShouldResolveAndAutowireComponentById() {
-		Component inflated = springClara.create("autowiredById.xml",
-				new Controller());
-		OtherTestComponent component = (OtherTestComponent) Clara
-				.findComponentById(inflated, "testComponent");
+		Component inflated = springClara.create("autowiredById.xml", new Controller());
+		OtherTestComponent component =
+				(OtherTestComponent)Clara.findComponentById(inflated, "testComponent");
 		assertSame(TestConfig.SPECIFIC_TEST_COMPONENT, component);
 		assertNotNull(component.getSomeBean());
 	}
@@ -53,13 +51,12 @@ public class SpringClaraTest {
 		thrown.expect(LayoutInflaterException.class);
 		thrown.expectMessage("the component bean with id 'specificTestComponent' is not matching type "
 				+ "'TestComponent' (actual type: org.vaadin.clara.spring.OtherTestComponent)");
-		springClara.create("autowiredByIdWithWrongTypeOfNode.xml",
-				new Controller());
+		springClara.create("autowiredByIdWithWrongTypeOfNode.xml", new Controller());
 	}
 
 	@ComponentScan(basePackages = "org.vaadin.clara.spring")
 	public static class TestConfig {
-		private static final OtherTestComponent SPECIFIC_TEST_COMPONENT = new OtherTestComponent();
+		static final OtherTestComponent SPECIFIC_TEST_COMPONENT = new OtherTestComponent();
 
 		@Bean
 		public OtherTestComponent specificTestComponent() {

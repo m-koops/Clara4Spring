@@ -57,3 +57,10 @@ compileJava {
   sourceCompatibility = 1.7
   targetCompatibility = 1.7
 }
+
+jar {
+	manifest.attributes "Implementation-Title": "Clara4Spring"
+	manifest.attributes "Implementation-Version": "0.1"
+	manifest.attributes "Implementation-Vendor-Id": "org.vaadin.addons"
+	manifest.attributes "Vaadin-Package-Version": 1
+}

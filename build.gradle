@@ -11,7 +11,7 @@ buildscript {
 }
 
 group = 'org.vaadin.addons'
-version = '0.1'
+version = '0.0.1'
 
 repositories {
   mavenCentral()
@@ -24,6 +24,7 @@ repositories {
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
 
 ext {
   versions = [
@@ -58,9 +59,42 @@ compileJava {
   targetCompatibility = 1.7
 }
 
+task writePom {
+	def pomFile = "$buildDir/pom/exported-pom.xml"
+	outputs.file(pomFile)
+	doFirst {
+	    pom {
+	        project {
+	            inceptionYear '2015'
+	            licenses {
+	                license {
+	                    name 'The Apache Software License, Version 2.0'
+	                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+	                    distribution 'repo'
+	                }
+	            }
+	        }
+	        whenConfigured {
+	  			p -> p.dependencies = p.dependencies.findAll { 
+		        	dep -> dep.scope != "test" 
+		    	}
+		    }
+			.withXml {
+				dependencyManagement.pomConfigurer.configurePom(asNode())
+			}
+	    }.writeTo(pomFile)
+    }
+}
+
 jar {
+	dependsOn writePom
 	manifest.attributes "Implementation-Title": "Clara4Spring"
-	manifest.attributes "Implementation-Version": "0.1"
-	manifest.attributes "Implementation-Vendor-Id": "org.vaadin.addons"
+	manifest.attributes "Implementation-Version": "$project.version"
+	manifest.attributes "Implementation-Vendor-Id": "Mark Koops"
 	manifest.attributes "Vaadin-Package-Version": 1
+	
+	into ("META-INF/maven/$project.group/$project.name") {
+		from writePom.outputs
+		rename '.*', 'pom.xml' 
+	}
 }
